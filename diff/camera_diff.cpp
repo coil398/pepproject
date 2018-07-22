@@ -5,7 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
-#define THREASHOLD 50
+#define THRESHOLD 50
 #define MIN_CONTOUR_AREA 100000
 
 using namespace std;
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
 
         cv::absdiff(frame, bg, diff);
         cv::cvtColor(diff, gray, cv::COLOR_BGR2GRAY);
-        cv::threshold(gray, dst, THREASHOLD, 255, cv::THRESH_BINARY);
+        cv::threshold(gray, dst, THRESHOLD, 255, cv::THRESH_BINARY);
 
         cv::findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
