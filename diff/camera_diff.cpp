@@ -1,21 +1,24 @@
 #include <iostream>
+#include <string>
 #include <sstream>
 #include <unistd.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
-#define THREASHOLD 50
-#define MIN_CONTOUR_AREA 100000
+#define THRESHOLD 50
+#define MIN_CONTOUR_AREA 10000
 
 using namespace std;
 
 int fileNumber = 0;
 void savePic(cv::Mat frame);
+// template <typename T>
+// string to_string(T value);
 
 
 int main(int argc, char* argv[]){
-    fileNumber = (int)argv[1][0] - (int)'0';
+    fileNumber = atoi(argv[1]);
 
     cv::VideoCapture cap(0);
 
@@ -28,14 +31,15 @@ int main(int argc, char* argv[]){
     cap >> frame;
     frame.copyTo(bg);
 
-    cv::imshow("bg", bg);
+
+    // cv::imshow("bg", bg);
 
     while(1){
         cap >> frame;
 
         cv::absdiff(frame, bg, diff);
         cv::cvtColor(diff, gray, cv::COLOR_BGR2GRAY);
-        cv::threshold(gray, dst, THREASHOLD, 255, cv::THRESH_BINARY);
+        cv::threshold(gray, dst, THRESHOLD, 255, cv::THRESH_BINARY);
 
         cv::findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
@@ -50,8 +54,8 @@ int main(int argc, char* argv[]){
 
         //cv::drawContours(frame, truncatedContours, -1, *color, 5);
 
-        cv::imshow("frame", frame);
-        cv::imshow("dst", dst);
+        // cv::imshow("frame", frame);
+        // cv::imshow("dst", dst);
 
         contours.clear();
         //truncatedContours.clear();
@@ -63,6 +67,8 @@ int main(int argc, char* argv[]){
             cv::imwrite("capimage.jpg", frame);
         }
 
+	sleep(5);
+
     }
 
     cv::destroyAllWindows();
@@ -71,10 +77,17 @@ int main(int argc, char* argv[]){
 }
 
 void savePic(cv::Mat frame){
-    string fileName = "image";
+    string fileName = "./images/image";
     fileName += to_string(fileNumber);
     fileName += ".jpg";
     printf("file name is %s\n", fileName.c_str());
     cv::imwrite(fileName.c_str(), frame);
     fileNumber++;
 }
+
+// template <typename T>
+// string  to_string(T value){
+//     ostringstream os;
+//     os << value;
+//     return os.str();
+// }
